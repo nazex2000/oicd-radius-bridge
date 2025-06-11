@@ -1,6 +1,7 @@
 # OIDC-RADIUS Bridge
 
 A bridge service that authenticates FreeRADIUS requests against an OIDC provider (like Keycloak).
+![SSO UEM](https://github.com/user-attachments/assets/785a5f04-102c-42ee-b78a-e618e50e1932)
 
 ## Features
 
