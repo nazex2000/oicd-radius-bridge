@@ -49,7 +49,7 @@ func main() {
 
 	// Setup HTTP server for local FreeRADIUS communication
 	server := &http.Server{
-		Addr:         "127.0.0.1:8080", // Only listen on localhost
+		Addr:         ":8080", // Listen on all interfaces
 		Handler:      handler,
 		ReadTimeout:  5 * time.Second,  // Shorter timeout for local requests
 		WriteTimeout: 5 * time.Second,  // Shorter timeout for local requests
@@ -61,7 +61,7 @@ func main() {
 
 	// Start the service listening for requests
 	go func() {
-		logger.Info("Starting OIDC-RADIUS bridge server on 127.0.0.1:8080...")
+		logger.Info("Starting OIDC-RADIUS bridge server on port 8080...")
 		serverErrors <- server.ListenAndServe()
 	}()
 
