@@ -1,51 +1,48 @@
-# Build stage
+# Etapa de build
 FROM golang:1.24-alpine AS builder
 
-# Install build dependencies
+# Instala dependências de build
 RUN apk add --no-cache git
 
-# Set working directory
+# Define diretório de trabalho
 WORKDIR /app
 
-# Copy go mod files
+# Copia arquivos de dependências
 COPY go.mod go.sum ./
 
-# Download dependencies
+# Baixa dependências
 RUN go mod download
 
-# Copy source code
+# Copia código-fonte
 COPY . .
 
-# Build the application
+# Compila o binário
 RUN CGO_ENABLED=0 GOOS=linux go build -o oidc-radius-bridge ./cmd/server
 
-# Final stage
+# Etapa de runtime
 FROM alpine:3.19
 
-# Install runtime dependencies
+# Instala dependências de runtime
 RUN apk add --no-cache ca-certificates tzdata
 
-# Create non-root user
+# Cria usuário não root
 RUN adduser -D -g '' appuser
 
-# Set working directory
+# Define diretório de trabalho
 WORKDIR /app
 
-# Copy binary from builder
+# Copia binário e scripts do builder
 COPY --from=builder /app/oidc-radius-bridge .
-
-# Copy Python script
 COPY --from=builder /app/scripts/radius_auth.py /app/scripts/
 
-# Set permissions
+# Permissões corretas
 RUN chown -R appuser:appuser /app
 
-# Switch to non-root user
+# Usa usuário não root
 USER appuser
 
-# Expose port for local FreeRADIUS communication
+# Expõe a porta 8080
 EXPOSE 8080
 
-# Run the application
+# Comando padrão
 CMD ["./oidc-radius-bridge"]
- 
